@@ -7,7 +7,11 @@ suppressPackageStartupMessages({
 })
 
 
-VERSION = list(shinyapp = "1.1.0", 
+#analysis.form-group { margin-top: 15px; margin-bottom: 3px;}
+#nsims.form-group {margin-bottom: 0px;}
+
+
+VERSION = list(shinyapp = "1.2.0", 
                ibdsim2 = packageVersion("ibdsim2"))
 
 .MODELS = c(Haldane = "haldane", chi2 = "chi")
@@ -21,23 +25,34 @@ ui = fluidPage(
   tags$head(
     tags$style(type = "text/css", "
       .body {font-size: small}
-      #nsims.form-control.shiny-bound-input {height:auto; padding:2px 5px 0px 5px;}
-      #analysis.form-group { margin-top: 15px; margin-bottom: 3px;}
+      .well {padding-top: 10px;}
       .selectize-dropdown {width: 250px !important;}
       .fa-arrow-left { font-size:xx-large; color:#E87722;}
       .fa-check { font-size:xx-large; color:Lime}
   ")),
   
-  # Title bar
-  fluidRow(
-    column(6, titlePanel("IBD sharing by family members")),
-    column(3, radioButtons("analysis", "Analysis:", selected = "Sharing", inline = TRUE,
-                           choices = c("Sharing", "Autozygosity"))),
-    column(2, style="margin-top: 10px; padding-left: 5px; width: 100px", 
-           numericInput("nsims", "Sims:", value = 50, min = 1, max = 10000)),
-    column(1, style="margin-top: 27px", 
-           downloadButton("download", NULL, class="btn btn-warning", style = "width: 100%;"))
-  ),
+  # Application title
+  h2(id = "title-h2", "IBD sharing by family members"),
+  tags$style(HTML("#title-h2 {background-color: gray; color: white; padding: 15px}")),
+  
+  p(bold("Purpose: "),
+    "Estimate and visualise distributions of genomic segments shared identical-by-descent (IBD) between related individuals, by simulating the recombination process through the pedigree."),
+  
+  p(bold("More information: "),
+    "This is a frontend for the R package ", link("ibdsim2", "https://github.com/magnusdv/ibdsim2"), 
+    ", which is part of the ", link("ped suite", "https://magnusdv.github.io/pedsuite"), " ecosystem for pedigree analysis.", 
+    "Details about the simulations and the various parameters can be found in the documentation of ibdsim2 (and also in the book ",
+    link("Pedigree analysis in R", "https://www.elsevier.com/books/pedigree-analysis-in-r/vigeland/978-0-12-824430-2"), ").",
+    
+    "This is version", VERSION$shinyapp, "of ibdsim2-shiny (",
+    link("changelog", "https://github.com/magnusdv/ibdsim2-shiny/blob/master/NEWS.md"), ").",
+    "For bug reports, feature request and other comments, please file an issue ", 
+    link("here", "https://github.com/magnusdv/ibdsim2-shiny/issues"), "."),
+    
+  
+
+# Widgets --------------------------------------------------------------
+fluidRow(
   
   # Left sidebar
   sidebarPanel(width = 2, style = "min-width: 185px",
@@ -58,7 +73,7 @@ ui = fluidPage(
     numericInput("cutoff1", "Cutoff (cM)", value = 0, min = 0, step = 1),
     br(),
     fluidRow(
-      column(8, style = "font-size: larger;", actionButton("simulate1", "Simulate!", width = "100%", class = "btn btn-info")),
+      column(8, style = "font-size: larger;", actionButton("simulate1", "Simulate!", width = "100%", class = "btn btn-primary")),
       column(4, style = "padding-left:10px;", uiOutput("icon1"))
     ),
   ),
@@ -90,10 +105,20 @@ ui = fluidPage(
     numericInput("cutoff2", "Cutoff (cM)", value = 0, min = 0, step = 1),
     br(),
     fluidRow(
-      column(8, style = "font-size: larger;", actionButton("simulate2", "Simulate!", width = "100%", class = "btn btn-info")),
+      column(8, style = "font-size: larger;", actionButton("simulate2", "Simulate!", width = "100%", class = "btn btn-primary")),
       column(4, style = "padding-left:10px;", uiOutput("icon2"))
     ),
   ),
+  
+),
+  
+fluidRow(column(12, wellPanel(
+  fluidRow(
+    column(3, radioButtons("analysis", "Analysis:", selected = "Sharing", inline = TRUE,
+                 choices = c("Sharing", "Autozygosity"))),
+    column(3, numericInput("nsims", "Sims:", value = 50, min = 1, max = 10000, width = "100px")),
+    column(3, style="margin-top: 25px", downloadButton("download", "Download data", class="btn btn"))
+  )))),
 )
 
 
@@ -235,7 +260,8 @@ server = function(input, output, session) {
     filename = "ibdsim2-output.zip",
     content = function(con) {
       files = saveData(segmentData1(), segmentData2(), params1 = allParams1(), params2 = allParams2(), version = VERSION)
-      zip(con, req(files), flags = "-jq9X") # j = junkpaths; q = quiet
+      if(!length(files)) return(errModal("No data to save"))
+      zip(con, files, flags = "-jq9X") # j = junkpaths; q = quiet
     }, 
     contentType = "application/zip"
   )

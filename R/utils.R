@@ -1,3 +1,7 @@
+bold = function(x) strong(x, .noWS = "outside")
+ital = function(x) em(x, .noWS = "outside")
+link = function(s, href = s) a(s, href = href, .noWS = "outside")
+
 BUILTIN_PEDS = c(Choose = "", "Trio", "Siblings", "Sibship of 3", "Half sibs, maternal", "Half sibs, paternal",
                  "3/4-siblings", "3/4-siblings + child", "Grandparent (female line)", "Grandparent (male line)",
                  "Great grandparent (female line)", "Great grandparent (male line)",

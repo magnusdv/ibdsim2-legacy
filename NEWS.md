@@ -1,3 +1,12 @@
+# ibdsim2-shiny 1.2.0
+
+## New features
+
+* Added a brief introduction and links to changelog and github repos.
+
+* Moved "General options" down below the plots.
+
+
 # ibdsim2-shiny 1.1.0
 
 ## New features
