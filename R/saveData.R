@@ -1,0 +1,97 @@
+saveData = function(segData1, segData2, params1, params2, version) {
+  files = NULL
+  
+  tmpdir = tempdir()
+  
+  if(!is.null(segData1)) {
+    sumfile = file.path(tmpdir, "ibdsim2-summary-1.txt")
+    writeSummary(sumfile, segData1$summary, params1, version)
+    
+    detfile = file.path(tmpdir, "ibdsim2-details-1.txt")
+    write.table(segData1$perSim, file = detfile, quote = FALSE, row.names = FALSE, sep = "\t")
+    files = c(files, sumfile, detfile)
+  }
+  
+  if(!is.null(segData2)) {
+    sumfile = file.path(tmpdir, "ibdsim2-summary-2.txt")
+    writeSummary(sumfile, segData2$summary, params2, version)
+    
+    detfile = file.path(tmpdir, "ibdsim2-details-2.txt")
+    write.table(segData2$perSim, file = detfile, quote = FALSE, row.names = FALSE, sep = "\t")
+    files = c(files, sumfile, detfile)
+  }
+  
+  # Return filenames
+  files
+}
+
+writeSummary = function(file, df, params, version) {
+  
+  txt = '
+  ###########################################
+  # Summary of simulations by ibdsim2-shiny #
+  # Version: {version$shinyapp} (ibdsim2: {version$ibdsim2})    #
+  ###########################################
+  #
+  # Parameters
+  # ==========
+  # Analysis: {params$analysis}
+  # Number of simulations: {params$nsims} 
+  # Random number seed: {params$seed} 
+  # Model: {names(params$model)}
+  # Map: {names(params$map)}
+  # Sex specific: {params$sexspec}
+  # Length cutoff: {params$cutoff}
+  #
+  # Relationship
+  # ============
+  # Builtin: {params$builtin %!% "-"}
+  # Ped file: {params$loadped %!% "-"}
+  # Individuals: {toString(params$ids) %!% "-"}
+  # Label: {params$label %!% "-"}
+  #
+  # R code
+  # ======
+  # library(ibdsim2)
+  # ped = {ped2ascii(params$ped)}
+  # map = {map2ascii(params$map, params$sexspec)}
+  # sims = ibdsim(ped, N = {params$nsims}, ids = {vec2ascii(params$ids)}, map = map, model = "{params$model}", seed = {params$seed})
+  # segs = findPattern(sims, pattern = list({switch(params$analysis, Sharing = "carriers", Autozygosity = "autozygous")} = {vec2ascii(params$ids)}), cutoff = {params$cutoff})
+  # stats = segmentStats(segs, quantiles = c(0.025, 0.5, 0.975))
+  # stats$summary
+  #'
+  
+  write(glue(txt), file)
+  
+  # Rounded summary table
+  tbl = cbind(Variable = rownames(df), round(df, 2))
+  
+  suppressWarnings(write.table(tbl, file = file, append = TRUE, quote = FALSE, row.names = FALSE, sep = "\t"))
+}
+
+
+summ = function(v) {
+  round(c(mean = mean(v), sd = sd(v), min = min(v), quantile(v, c(0.025, 0.5, 0.975)), max = max(v)), 2)
+}
+
+vec2ascii = function(x) {
+  if(is.character(x))
+    x = paste0('"', x, '"')
+  sprintf("c(%s)", toString(x))
+}
+
+ped2ascii = function(ped) {
+  glue_data(as.data.frame(ped), 
+            "ped(id = {vec2ascii(id)}, fid = {vec2ascii(fid)}, mid = {vec2ascii(mid)}, sex = {vec2ascii(sex)})")
+}
+
+map2ascii = function(map, sexspec) {
+  glue(switch(map,
+               decode19 = 'loadMap("decode19", uniform = TRUE, sexAverage = {!sexspec})',
+               onechrom = 'uniformMap(Mb = 2753.932, cM = {if(!sexspec) "3391.354" else "c(male = 2602.290, female = 4180.418)"})')
+  )
+}
+
+
+`%!%` = function(x, y)
+  if(is.null(x) || !length(x) || !nchar(x)) y else x

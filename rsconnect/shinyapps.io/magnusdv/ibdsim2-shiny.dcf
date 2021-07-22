@@ -1,0 +1,13 @@
+name: ibdsim2-shiny
+title: ibdsim2-shiny
+username:
+account: magnusdv
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4408447
+bundleId: 4842318
+url: https://magnusdv.shinyapps.io/ibdsim2-shiny/
+when: 1626884567.8454
+lastSyncTime: 1626884567.8454
+asMultiple: FALSE
+asStatic: FALSE
