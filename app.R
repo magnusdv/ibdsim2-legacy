@@ -46,7 +46,7 @@ ui = fluidPage(
     
     "This is version", VERSION$shinyapp, "of ibdsim2-shiny (",
     link("changelog", "https://github.com/magnusdv/ibdsim2-shiny/blob/master/NEWS.md"), ").",
-    "For bug reports, feature request and other comments, please file an issue ", 
+    "Bug reports, feature requests and other comments are most welcome, for instance by filing an issue ", 
     link("here", "https://github.com/magnusdv/ibdsim2-shiny/issues"), "."),
     
   
