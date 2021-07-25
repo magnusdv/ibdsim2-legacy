@@ -1,3 +1,12 @@
+# ibdsim2-shiny 1.2.1
+
+## New features
+
+* Intro text: Add link to QuickPed; other minor modifications
+
+* Add analysis date/time in output text files
+
+
 # ibdsim2-shiny 1.2.0
 
 ## New features
