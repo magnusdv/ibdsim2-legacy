@@ -36,20 +36,17 @@ ui = fluidPage(
   tags$style(HTML("#title-h2 {background-color: gray; color: white; padding: 15px}")),
   
   p(bold("Purpose: "),
-    "Estimate and visualise distributions of genomic segments shared identical-by-descent (IBD) between related individuals, by simulating the recombination process through the pedigree."),
+    "Estimate and visualise distributions of genomic segments shared identical-by-descent (IBD) between related individuals, or within inbred individuals (autozygosity). This is done by simulating the recombination process through the pedigree."),
   
   p(bold("More information: "),
-    "This is a frontend for the R package ", link("ibdsim2", "https://github.com/magnusdv/ibdsim2"), 
+    "This program is a frontend for the R package ", link("ibdsim2", "https://github.com/magnusdv/ibdsim2"), 
     ", which is part of the ", link("ped suite", "https://magnusdv.github.io/pedsuite"), " ecosystem for pedigree analysis.", 
     "Details about the simulations and the various parameters can be found in the documentation of ibdsim2 (and also in the book ",
-    link("Pedigree analysis in R", "https://www.elsevier.com/books/pedigree-analysis-in-r/vigeland/978-0-12-824430-2"), ").",
+    link("Pedigree analysis in R", "https://www.elsevier.com/books/pedigree-analysis-in-r/vigeland/978-0-12-824430-2"), ")."), 
     
-    "This is version", VERSION$shinyapp, "of ibdsim2-shiny (",
-    link("changelog", "https://github.com/magnusdv/ibdsim2-shiny/blob/master/NEWS.md"), ").",
-    "Bug reports, feature requests and other comments are most welcome, for instance by filing an issue ", 
-    link("here", "https://github.com/magnusdv/ibdsim2-shiny/issues"), "."),
-    
-  
+  p(bold("Tip: "),
+    "If you want to load a custom pedigree, you can use ", link("QuickPed", "https://magnusdv.shinyapps.io/ibdsim2-shiny/"), 
+    " to create the required ped file."),
 
 # Widgets --------------------------------------------------------------
 fluidRow(
@@ -91,7 +88,7 @@ fluidRow(
   sidebarPanel(width = 2, style = "min-width: 185px",
     h4("Pedigree 2"),
     selectizeInput("builtin2", "Built-in pedigree", selected = "", choices = BUILTIN_PEDS, size = 10),
-    fileInput("loadped2", "Ped file", buttonLabel = icon("folder-open"),
+    fileInput("loadped2", "Load ped file", buttonLabel = icon("folder-open"),
               accept = c(".ped", ".txt"), width = "100%", placeholder = NULL),
     textInput("ids2", "Individuals", value = "", width = "100%"),
     textInput("label2", "Label", value = "Ped 2", width = "100%"),
@@ -119,6 +116,11 @@ fluidRow(column(12, wellPanel(
     column(3, numericInput("nsims", "Sims:", value = 50, min = 1, max = 10000, width = "100px")),
     column(3, style="margin-top: 25px", downloadButton("download", "Download data", class="btn btn"))
   )))),
+
+p(style = "font-size:small", "This is version", VERSION$shinyapp, "of ibdsim2-shiny (",
+link("changelog", "https://github.com/magnusdv/ibdsim2-shiny/blob/master/NEWS.md"), ").",
+"Bug reports, feature requests and other comments are most welcome, for instance by filing an issue ", 
+link("here", "https://github.com/magnusdv/ibdsim2-shiny/issues"), "."),
 )
 
 
