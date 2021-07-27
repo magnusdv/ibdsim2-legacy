@@ -4,6 +4,7 @@ suppressPackageStartupMessages({
   library(glue)
   library(ibdsim2)
   library(ribd)
+  library(lubridate)
 })
 
 
@@ -11,7 +12,7 @@ suppressPackageStartupMessages({
 #nsims.form-group {margin-bottom: 0px;}
 
 
-VERSION = list(shinyapp = "1.2.1", 
+VERSION = list(shinyapp = "1.2.2", 
                ibdsim2 = packageVersion("ibdsim2"))
 
 .MODELS = c(Haldane = "haldane", chi2 = "chi")

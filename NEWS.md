@@ -1,3 +1,10 @@
+# ibdsim2-shiny 1.2.2
+
+## Bug fix
+
+* Added missing import statement of `lubridate` package
+
+
 # ibdsim2-shiny 1.2.1
 
 ## New features
