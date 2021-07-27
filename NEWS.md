@@ -1,17 +1,17 @@
 # ibdsim2-shiny 1.2.2
 
-## Bug fix
+* Use `ibdsim2` version 1.4.0.
 
-* Added missing import statement of `lubridate` package
+* Added missing import statement of `lubridate` package.
 
 
 # ibdsim2-shiny 1.2.1
 
 ## New features
 
-* Intro text: Added link to QuickPed; other minor modifications
+* Intro text: Added link to QuickPed; other minor modifications.
 
-* Added analysis date/time in output text files
+* Added analysis date/time in output text files.
 
 
 # ibdsim2-shiny 1.2.0

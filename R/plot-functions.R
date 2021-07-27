@@ -100,19 +100,3 @@ generateIbdPlot = function(segData, analysis, cols) {
   theme(plot.margin = margin(10,10,10,10))
 }
 
-
-
-# Not used
-collectSegments = function(sim, cutoff, analysis) {
-  if(is.null(sim))
-    return(list())
-  
-  ids = ibdsim2:::extractIdsFromSegmentSummary(sim[[1]])
-  
-  # Extract segments according to analysis type
-  pattern = setNames(list(ids), switch(analysis, Sharing = "carriers", Autozygosity = "autozygous"))
-  segments = findPattern(sim, pattern, cutoff = cutoff)
-  
-  # Extract lengths (list of vectors)
-  lapply(segments, function(m) m[, 'length'])
-}
