@@ -267,10 +267,12 @@ server = function(input, output, session) {
   
   output$pedplot1 = renderPlot({
     ped = req(ped1())
+    lab = input$label1
+    
     tryCatch(
-      plotped(ped, ids = ids1(), col = COLS[1], title = input$label1, pedname = input$builtin1),
+      plotped(ped, ids = ids1(), col = COLS[1], title = lab, pedname = input$builtin1),
       error = function(e) {
-        plot.new(); box(which = "outer", col = 1); title(input$label1); 
+        plot.new(); box(which = "outer", col = 1); title(lab); 
         msg = if(grepl("reduce cex", conditionMessage(e))) "(Too big for plot region)" else conditionMessage(e)
         mtext(msg, line = 0, col = 2)
       })
@@ -278,23 +280,35 @@ server = function(input, output, session) {
 
   output$pedplot2 = renderPlot({
     ped = req(ped2())
+    lab = input$label2
+    
     tryCatch(
-      plotped(ped, ids = ids2(), col = COLS[2], title = input$label2, pedname = input$builtin2),
+      plotped(ped, ids = ids2(), col = COLS[2], title = lab, pedname = input$builtin2),
       error = function(e) {
-        plot.new(); box(which = "outer", col = 1); title(input$label2); 
+        plot.new(); box(which = "outer", col = 1); title(lab); 
         msg = if(grepl("reduce cex", conditionMessage(e))) "(Too big for plot region)" else conditionMessage(e)
         mtext(msg, line = 0, col = 2)
       })
   })
   
   output$ibdplot = renderPlot({
+    labs = c(input$label1, input$label2)
     segData = list(segmentData1(), segmentData2())
-    nonnull = req(!sapply(segData, is.null))
-    
     cols = COLS
-    names(segData) = names(cols) = c(input$label1, input$label2)
+    names(segData) = names(cols) = labs
     
-    g = generateIbdPlot(segData[nonnull], input$analysis, cols = cols[nonnull], observed = observed())
+    isnull = sapply(segData, is.null)
+    skip = isnull | labs == ""
+    
+    for(i in 1:2) if(!isnull[i] && labs[i] == "")
+      return(errModal("Please specify a label for pedigree ", i))
+    
+    if(!any(skip) && labs[1] == labs[2])
+      return(errModal("Labels cannot be equal"))
+    
+    req(!isnull)  # return if both empty
+    
+    g = generateIbdPlot(segData[!skip], input$analysis, cols = cols[!skip], observed = observed())
     suppressWarnings(print(g))
   })
   
