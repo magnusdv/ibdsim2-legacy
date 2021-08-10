@@ -38,7 +38,7 @@ getSegmentData = function(sim, analysis, cutoff) {
   segmentStats(segs, returnAll = TRUE)
 }
 
-generateIbdPlot = function(segData, analysis, cols) {
+generateIbdPlot = function(segData, analysis, cols, observed = NULL) {
   # assume no entry or segData empty!
   labs = names(segData)
   
@@ -51,26 +51,23 @@ generateIbdPlot = function(segData, analysis, cols) {
   
   # Plot variables
   base = 14
-  legendInside = TRUE
-  
   
   # Plot1: Average length vs count
   g1 = ggplot(perSim, aes_(~Count, ~Average, color = ~Relationship)) + 
     geom_jitter(width = 0.35, alpha = 0.5, shape = 1, show.legend = FALSE) +
     labs(x = "Number of segments", y = "Average segment (cM)", col = NULL) +
     suppressWarnings(stat_ellipse(size = 1.2)) +
-    theme_classic(base_size = base)
-  
-  if(legendInside)
-    g1 = g1 + theme(legend.position = c(.99, .99),
-                    legend.justification = c("right", "top"),
-                    legend.key.width = unit(1, "cm"),
-                    legend.text = element_text(size = 14))
+    theme_classic(base_size = base) + 
+    theme(legend.position = c(.99, .99),
+          legend.justification = c("right", "top"),
+          legend.key.width = unit(1.4, "cm"),
+          legend.text = element_text(size = 16))
   
   # Plot 2: Distr of total sharing
   g2 = ggplot(perSim, aes_(~Total, color = ~Relationship)) + 
     geom_density(aes_(fill = ~Relationship), alpha = 0.1, size = 1.2, show.legend = FALSE) +
-    labs(x = switch(analysis, Sharing = "Total shared cM", Autozygosity = "Total autozygosity (cM)")) + 
+    labs(x = switch(analysis, Sharing = "Total shared cM", Autozygosity = "Total autozygosity (cM)"),
+         y = "density") + 
     theme_classic(base_size = base) +
     theme(axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
@@ -80,7 +77,7 @@ generateIbdPlot = function(segData, analysis, cols) {
   # Plot 3: Count distribution
   g3 = ggplot(perSim, aes_(~Count, color = ~Relationship)) + 
     geom_density(aes_(fill = ~Relationship), alpha = 0.1, size = 1.2, show.legend = FALSE) +
-    labs(x = "Number of segments") +
+    labs(x = "Number of segments", y = "density") +
     theme_classic(base_size = base) +
     theme(axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
@@ -89,12 +86,21 @@ generateIbdPlot = function(segData, analysis, cols) {
   # Plot 4: Length distribution
   g4 = ggplot(allSegs, aes_(~Length, color = ~Relationship)) + 
   geom_density(aes_(fill = ~Relationship), alpha = 0.1, size = 1.2, show.legend = FALSE) +
-  labs(x = "Segment length") +
+  labs(x = "Segment length", y = "density") +
   theme_classic(base_size = base) +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_text(size = 12))
 
+  # Add observed data
+  if(!is.null(observed)) {
+    g1 = g1 + annotate("point", x = observed$nseg, observed$mean, size = 3.5, stroke = 2, shape = 4, colour = 1)
+    g2 = g2 + annotate("text", x = observed$total, y = 0, label = "\u25B2", vjust = 0, size = 6)
+    g3 = g3 + annotate("text", x = observed$nseg, y = 0, label = "\u25B2", vjust = 0, size = 6)
+    if(length(observed$lengths))
+      g4 = g4 + annotate("text", x = observed$lengths, y = 0, label = "|", vjust = 0, size = 3)
+  }
+  
   (g1 | (g2 / g3 / g4)) & # plot_layout(guides = 'collect') & 
   scale_color_manual(values = cols) & 
   theme(plot.margin = margin(10,10,10,10))

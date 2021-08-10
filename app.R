@@ -30,6 +30,7 @@ ui = fluidPage(
       .selectize-dropdown {width: 250px !important;}
       .fa-arrow-left { font-size:xx-large; color:#E87722;}
       .fa-check { font-size:xx-large; color:Lime}
+      
   ")),
   
   # Application title
@@ -110,13 +111,28 @@ fluidRow(
   
 ),
   
-fluidRow(column(12, wellPanel(
-  fluidRow(
-    column(3, radioButtons("analysis", "Analysis:", selected = "Sharing", inline = TRUE,
-                 choices = c("Sharing", "Autozygosity"))),
-    column(3, numericInput("nsims", "Sims:", value = 50, min = 1, max = 10000, width = "100px")),
-    column(3, style="margin-top: 25px", downloadButton("download", "Download data", class="btn btn"))
-  )))),
+# Bottom panel
+fluidRow(
+  column(6, wellPanel(id = "bottomwell1",
+    h4("Options"),
+    fluidRow(
+      column(5, radioButtons("analysis", "Analysis:", selected = "Sharing", inline = TRUE,
+                             choices = c("Sharing", "Autozygosity"))),
+      column(3, numericInput("nsims", "Sims:", value = 50, min = 1, max = 10000)),
+      column(4, style="margin-top: 25px", align = "center", downloadButton("download", "Download data", class="btn btn"))
+  ))),
+  column(6, wellPanel(id = "bottomwell2",
+    fluidRow(
+      column(8, h4("Observed data"),
+        fluidRow(
+          column(6, numericInput("obs-total", "Total length", value = "")),
+          column(6, numericInput("obs-nseg", "Count", value = "")),
+      )),
+      column(4,textAreaInput("obs-segs", "Segments", value = "", rows = 2)),
+    ))),
+  ),
+  tags$style(HTML("#bottomwell1, #bottomwell2 {padding-bottom: 1px}")),
+
 
 p(style = "font-size:small", "This is version", VERSION$shinyapp, "of ibdsim2-shiny (",
 link("changelog", "https://github.com/magnusdv/ibdsim2-shiny/blob/master/NEWS.md"), ").",
@@ -208,6 +224,40 @@ server = function(input, output, session) {
   segmentData1 = reactive(getSegmentData(sim1(), analysis = input$analysis, cutoff = input$cutoff1))
   segmentData2 = reactive(getSegmentData(sim2(), analysis = input$analysis, cutoff = input$cutoff2))
   
+
+# Observed data -----------------------------------------------------------
+
+  observedSegs = reactive({
+    s = input$`obs-segs`
+    lens = strsplit(s, split = "\n")[[1]] |> trimws()
+    lens = lens[lens != ""]
+    lensNum = suppressWarnings(as.numeric(lens))
+    if(anyNA(lensNum))
+      return(errModal(paste("Non-numeric segment length:", toString(lens[is.na(lensNum)]))))
+    lensNum
+  })
+  
+  observeEvent(input$`obs-segs`, {
+    lens = observedSegs()
+    if(!length(lens)) {
+      enable("obs-nseg"); enable("obs-total")
+      updateNumericInput(session, "obs-nseg", value = "")
+      updateNumericInput(session, "obs-total", value = "")
+    }
+    else {
+      updateNumericInput(session, "obs-nseg", value = length(lens))
+      updateNumericInput(session, "obs-total", value = sum(lens))
+      disable("obs-nseg"); disable("obs-total")
+    }
+  })
+  
+  observed = reactive({
+    nseg = input$`obs-nseg`
+    total = input$`obs-total`
+    if(is.na(nseg) || is.na(total))
+      return(NULL)
+    list(nseg = nseg, total = total, mean = total/nseg, lengths = observedSegs())
+  })
   
 # Plots ----------------------------------------------------------
 
@@ -244,7 +294,7 @@ server = function(input, output, session) {
     cols = COLS
     names(segData) = names(cols) = c(input$label1, input$label2)
     
-    g = generateIbdPlot(segData[nonnull], input$analysis, cols = cols[nonnull])
+    g = generateIbdPlot(segData[nonnull], input$analysis, cols = cols[nonnull], observed = observed())
     suppressWarnings(print(g))
   })
   

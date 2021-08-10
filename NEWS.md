@@ -1,3 +1,10 @@
+# ibdsim2-shiny 1.3.0
+
+## New features
+
+* A set of observed data (segment lengths) can now be added, and will appear in the plots.
+
+
 # ibdsim2-shiny 1.2.2
 
 * Use `ibdsim2` version 1.4.0.
