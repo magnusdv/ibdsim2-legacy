@@ -12,7 +12,7 @@ suppressPackageStartupMessages({
 #nsims.form-group {margin-bottom: 0px;}
 
 
-VERSION = list(shinyapp = "1.2.2", 
+VERSION = list(shinyapp = "1.3.0", 
                ibdsim2 = packageVersion("ibdsim2"))
 
 .MODELS = c(Haldane = "haldane", chi2 = "chi")
