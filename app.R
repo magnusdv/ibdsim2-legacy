@@ -228,13 +228,12 @@ server = function(input, output, session) {
 # Observed data -----------------------------------------------------------
 
   observedSegs = reactive({
-    s = input$`obs-segs`
-    lens = strsplit(s, split = "\n")[[1]] |> trimws()
-    lens = lens[lens != ""]
-    lensNum = suppressWarnings(as.numeric(lens))
-    if(anyNA(lensNum))
-      return(errModal(paste("Non-numeric segment length:", toString(lens[is.na(lensNum)]))))
-    lensNum
+    lenStr = input$`obs-segs` |> strsplit("\n") |> unlist() |> strsplit(",") |> unlist() |> trimws()
+    lenStr = lenStr[lenStr != ""]
+    lens = suppressWarnings(as.numeric(lenStr))
+    if(anyNA(lens))
+      return(errModal(paste("Non-numeric segment length:", toString(lenStr[is.na(lens)]))))
+    lens
   })
   
   observeEvent(input$`obs-segs`, {
