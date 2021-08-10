@@ -4,6 +4,10 @@
 
 * A set of observed data (segment lengths) can now be added, and will appear in the plots.
 
+## Bug fixes
+
+* Missing (or identical) labels are now caught
+
 
 # ibdsim2-shiny 1.2.2
 
