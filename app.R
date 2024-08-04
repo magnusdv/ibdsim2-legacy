@@ -25,7 +25,8 @@ VERSION = list(shinyapp = "1.3.0",
 # User interface
 ui = fluidPage(
   
-  useShinyjs(),  # Set up shinyjs
+  useShinyjs(),
+  tags$head(includeHTML("GA.html")),
   
   tags$head(
     tags$style(type = "text/css", "
