@@ -84,7 +84,7 @@ generateRandomPed = function() {
   while(T) {
     fou = rpois(1, 3) + 1
     g = rpois(1, fou) + fou
-    x = randomPed(g, fou, selfing = F)
+    x = randomPed(g, fou, selfing = F) # TODO: outdated
     if(is.ped(x))  break
   }
   

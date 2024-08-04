@@ -11,9 +11,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-# A Shiny frontend for **ibdsim2**
+# A Shiny App for **ibdsim2** - Legacy Version
 
-<!-- badges: start -->
-<!-- badges: end -->
+This repository hosts the legacy version of the Shiny frontend for the R package **ibdsim2**. It is preserved for reference only and should not be used in new projects.
 
-Try the app here: <https://magnusdv.shinyapps.io/ibdsim2-shiny>.
+## Access the Legacy App
+Try the legacy app here: <https://magnusdv.shinyapps.io/ibdsim2-legacy>.
+
+## New Version
+The legacy app was based on version 1.4.0 of **ibdsim2**. Since then, this package has undergone a thorough update, resulting in much faster simulations and several new features. This required a substantial rewrite of the Shiny app, which was re-launched as part of **ibdsim2** version 2.1.0. Due to breaking changes in the underlying implementation, slightly different output can be expected in the new version compared to the legacy app.
+
+The new app can be accessed here: <https://magnusdv.shinyapps.io/ibdsim2-shiny>.
+

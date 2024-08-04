@@ -8,8 +8,12 @@ suppressPackageStartupMessages({
 })
 
 
-#analysis.form-group { margin-top: 15px; margin-bottom: 3px;}
-#nsims.form-group {margin-bottom: 0px;}
+# Deployment of legacy version --------------------------------------------
+
+# remotes::install_version("ibdsim2", version = "1.4.0")
+# rsconnect::deployApp()
+
+# -------------------------------------------------------------------------
 
 
 VERSION = list(shinyapp = "1.3.0", 
@@ -42,12 +46,12 @@ ui = fluidPage(
   
   p(bold("More information: "),
     "This program is a frontend for the R package ", link("ibdsim2", "https://github.com/magnusdv/ibdsim2"), 
-    ", which is part of the ", link("ped suite", "https://magnusdv.github.io/pedsuite"), " ecosystem for pedigree analysis.", 
+    ", which is part of the ", link("pedsuite", "https://magnusdv.github.io/pedsuite"), " ecosystem for pedigree analysis.", 
     "Details about the simulations and the various parameters can be found in the documentation of ibdsim2 (and also in the book ",
     link("Pedigree analysis in R", "https://www.elsevier.com/books/pedigree-analysis-in-r/vigeland/978-0-12-824430-2"), ")."), 
     
   p(bold("Tip: "),
-    "If you want to load a custom pedigree, you can use ", link("QuickPed", "https://magnusdv.shinyapps.io/ibdsim2-shiny/"), 
+    "If you want to load a custom pedigree, you can use ", link("QuickPed", "https://magnusdv.shinyapps.io/quickped/"), 
     " to create the required ped file."),
 
 # Widgets --------------------------------------------------------------
@@ -134,10 +138,10 @@ fluidRow(
   tags$style(HTML("#bottomwell1, #bottomwell2 {padding-bottom: 1px}")),
 
 
-p(style = "font-size:small", "This is version", VERSION$shinyapp, "of ibdsim2-shiny (",
-link("changelog", "https://github.com/magnusdv/ibdsim2-shiny/blob/master/NEWS.md"), ").",
+p(style = "font-size:small", "This is the legacy version", VERSION$shinyapp, "of ibdsim2-shiny (",
+link("changelog", "https://github.com/magnusdv/ibdsim2-legacy/blob/master/NEWS.md"), ").",
 "Bug reports, feature requests and other comments are most welcome, for instance by filing an issue ", 
-link("here", "https://github.com/magnusdv/ibdsim2-shiny/issues"), "."),
+link("here", "https://github.com/magnusdv/ibdsim2-legacy/issues"), "."),
 )
 
 

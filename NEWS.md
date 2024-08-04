@@ -1,3 +1,6 @@
+# NOTE
+This version of the ibdsim2-shiny app is no longer maintained. A new and much improved version of the app is included with the ibdsim2 package version 2.1.0. Please use that instead: https://github.com/magnusdv/ibdsim2.
+
 # ibdsim2-shiny 1.3.0
 
 ## New features
